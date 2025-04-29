@@ -1,0 +1,3 @@
+alias ll='ls -la'
+export EDITOR=vim
+PS1='\u@\h:\w\$ '  # Minimal prompt
