@@ -5,3 +5,7 @@ Automates setup for Ubuntu/Fedora/Arch with:
 - GUI apps (VS Code, GNOME Tweaks)
 - Git setup
 - Dotfiles
+
+## Run:
+```bash
+curl -fsSL https://raw.githubusercontent.com/DotRYOT/quickstart/refs/heads/main/setup.sh | bash
