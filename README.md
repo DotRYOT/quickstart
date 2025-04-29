@@ -40,7 +40,7 @@ Automates setup for Ubuntu/Fedora/Arch with:
 - Review Brave's [security documentation](https://github.com/brave/brave-browser/wiki/Installation#linux).
 
 ## 💡 Brave Browser Debloat Integration  
-- Integrates [`DotRYOT/fast-brave-debloat`](https://github.com/DotRYOT/fast-brave-debloat) to remove bloat like telemetry, sponsored content, and unused features.  
+- Integrates [`DotRYOT/fast-brave-debloat`](https://github.com/DotRYOT/fast-brave-debloater) to remove bloat like telemetry, sponsored content, and unused features.  
 - Fork from [fast-brave-debloater](https://github.com/nomadxxxx/fast-brave-debloater).  
 
 > ⚠️ Warning: Debloat scripts may disable features like ad-blocking or auto-updates. Test functionality post-install.  
