@@ -22,7 +22,8 @@ sudo -v
 case "$OS" in
     *Ubuntu*|*Debian*)
         sudo apt update && sudo apt upgrade -y
-    sudo apt install -y git curl wget x11-xserver-utils;;
+        sudo apt install -y git curl wget x11-xserver-utils
+    sudo apt install -y git;;
     *Fedora*)
         sudo dnf update -y
     sudo dnf install -y git curl wget xorg-x11-server-utils;;
