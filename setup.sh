@@ -3,6 +3,7 @@ set -e  # Exit on errors
 
 # Colors for output
 GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo -e "${GREEN}🚀 Starting Linux Quick Setup${NC}"
@@ -22,8 +23,7 @@ sudo -v
 case "$OS" in
     *Ubuntu*|*Debian*)
         sudo apt update && sudo apt upgrade -y
-        sudo apt install -y git curl wget x11-xserver-utils
-    sudo apt install -y git;;
+    sudo apt install -y git curl wget x11-xserver-utils;;
     *Fedora*)
         sudo dnf update -y
     sudo dnf install -y git curl wget xorg-x11-server-utils;;
@@ -156,8 +156,10 @@ case "$OS" in
     sudo pacman -S --noconfirm apache mariadb php php-apache php-gd php-mbstring;;
 esac
 
-# Secure MySQL
-sudo mysql_secure_installation <<EOF
+# Secure MySQL/MariaDB [[6]]
+if [[ "$OS" == *"Ubuntu"* || "$OS" == *"Debian"* ]]; then
+    echo -e "${GREEN}🔒 Securing MySQL...${NC}"
+  sudo mysql_secure_installation <<EOF
 y
 root
 y
@@ -165,8 +167,16 @@ y
 y
 y
 EOF
+else
+    echo -e "${YELLOW}⚠️ MariaDB detected. Manual security setup recommended.${NC}"
+    echo "Run 'sudo mysql_secure_installation' manually if needed."
+    sudo mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('root') WHERE User='root';"
+    sudo mysql -u root -e "DELETE FROM mysql.user WHERE User='';"
+    sudo mysql -u root -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test_%';"
+    sudo mysql -u root -e "FLUSH PRIVILEGES;"
+fi
 
-# Install Composer [[7]]
+# Composer [[7]]
 echo -e "${GREEN}📦 Installing Composer...${NC}"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
