@@ -10,7 +10,7 @@ This repository contains a Bash script (`setup.sh`) designed to automate the ins
 
 ## ✅ Key Features  
 - **Core Tools**: Git, build utilities, and package managers  
-- **Browsers**: Brave Browser (with [DotRYOT’s debloat script](https://github.com/DotRYOT/fast-brave-debloat))   
+- **Browsers**: Brave Browser (with [DotRYOT’s debloat script](https://github.com/DotRYOT/fast-brave-debloater))   
 - **Code Editors**: Visual Studio Code (native packages or Snap)  
 - **Security & Privacy**: Surfshark VPN integration  
 - **Display Settings**: Resolution set to 1920x1080 and persistent across reboots  

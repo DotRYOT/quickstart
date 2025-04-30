@@ -71,10 +71,10 @@ fi
 
 # Debloat Brave using DotRYOT fork [[7]]
 echo -e "${GREEN}🧹 Applying DotRYOT Brave debloat...${NC}"
-if [ ! -d "fast-brave-debloat" ]; then
-    git clone https://github.com/DotRYOT/fast-brave-debloat.git
+if [ ! -d "fast-brave-debloater" ]; then
+    git clone https://github.com/DotRYOT/fast-brave-debloater.git
 fi
-cd fast-brave-debloat || { echo "❌ Failed to access debloat dir"; exit 1; }
+cd fast-brave-debloater || { echo "❌ Failed to access debloat dir"; exit 1; }
 chmod +x brave_debloat.sh
 sudo ./brave_debloat.sh || echo "⚠️ Debloat failed (check script logs)"
 cd ..
