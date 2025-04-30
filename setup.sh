@@ -3,12 +3,11 @@ set -e  # Exit on errors
 
 # Colors for output
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo -e "${GREEN}🚀 Starting Linux Quick Setup${NC}"
 
-# Detect OS [[6]]
+# Detect OS
 OS=$(grep -Ei 'debian|ubuntu|arch|fedora' /etc/os-release -m 1 | cut -d= -f2)
 if [[ -z "$OS" ]]; then
     echo "Unsupported OS"
@@ -32,7 +31,7 @@ case "$OS" in
     sudo pacman -S --noconfirm git curl wget xorg-server;;
 esac
 
-# Install core tools [[3]]
+# Install core tools
 echo -e "${GREEN}🔧 Installing essential tools...${NC}"
 case "$OS" in
     *Ubuntu*|*Debian*) sudo apt install -y build-essential;;
@@ -40,7 +39,7 @@ case "$OS" in
     *Arch*) sudo pacman -S --noconfirm base-devel;;
 esac
 
-# Install Snapd [[4]]
+# Install Snapd
 echo -e "${GREEN}🔌 Installing Snapd...${NC}"
 case "$OS" in
     *Ubuntu*|*Debian*)
@@ -62,7 +61,7 @@ case "$OS" in
     fi;;
 esac
 
-# Install Brave Browser [[5]]
+# Install Brave Browser
 echo -e "${GREEN}🌐 Installing Brave Browser...${NC}"
 if ! command -v brave-browser &> /dev/null; then
     curl -fsS https://dl.brave.com/install.sh | sh
@@ -70,7 +69,7 @@ else
     echo "Brave already installed."
 fi
 
-# Debloat Brave using DotRYOT fork [[7]]
+# Debloat Brave using DotRYOT fork
 echo -e "${GREEN}🧹 Applying DotRYOT Brave debloat...${NC}"
 if [ ! -d "fast-brave-debloater" ]; then
     git clone https://github.com/DotRYOT/fast-brave-debloater.git
@@ -80,7 +79,7 @@ chmod +x brave_debloat.sh
 sudo ./brave_debloat.sh || echo "⚠️ Debloat failed (check script logs)"
 cd ..
 
-# Install Visual Studio Code [[6]]
+# Install Visual Studio Code
 echo -e "${GREEN}📦 Installing Visual Studio Code...${NC}"
 case "$OS" in
     *Ubuntu*|*Debian*)
@@ -101,7 +100,7 @@ gpgcheck=1
     sudo snap install code --classic || echo "⚠️ Fallback to AUR required";;
 esac
 
-# Set resolution to 1920x1080 [[1]]
+# Set resolution to 1920x1080
 echo -e "${GREEN}🖥️ Setting resolution to 1920x1080...${NC}"
 if xrandr | grep -q connected; then
     MODEL_LINE=$(cvt 1920 1080 | grep Modeline | awk '{print $5 " " $6 " " $7 " " $8 " " $9 " " $10}')
@@ -130,7 +129,7 @@ Comment=Set resolution to 1920x1080
 EOF
 fi
 
-# Enable dark mode [[8]]
+# Enable dark mode
 echo -e "${GREEN}🌑 Enabling dark mode...${NC}"
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark" 2>/dev/null || true
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" 2>/dev/null || true
@@ -145,65 +144,13 @@ fi
 mkdir -p ~/.mozilla/firefox/
 echo 'user_pref("browser.theme.dark-mode", true);' >> ~/.mozilla/firefox/prefs.js 2>/dev/null || true
 
-# LAMP Stack [[9]]
-echo -e "${GREEN}🔧 Installing LAMP stack...${NC}"
-case "$OS" in
-    *Ubuntu*|*Debian*)
-    sudo apt install -y apache2 mysql-server php php-cli php-mysql php-curl php-gd php-mbstring php-xml php-zip;;
-    *Fedora*)
-    sudo dnf install -y httpd mariadb-server mariadb php php-cli php-mysqlnd php-pecl-zip php-mbstring php-xml;;
-    *Arch*)
-    sudo pacman -S --noconfirm apache mariadb php php-apache php-gd php-mbstring;;
-esac
-
-# Secure MySQL/MariaDB [[6]]
-if [[ "$OS" == *"Ubuntu"* || "$OS" == *"Debian"* ]]; then
-    echo -e "${GREEN}🔒 Securing MySQL...${NC}"
-  sudo mysql_secure_installation <<EOF
-y
-root
-y
-y
-y
-y
-EOF
-else
-    echo -e "${YELLOW}⚠️ MariaDB detected. Manual security setup recommended.${NC}"
-    echo "Run 'sudo mysql_secure_installation' manually if needed."
-    sudo mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('root') WHERE User='root';"
-    sudo mysql -u root -e "DELETE FROM mysql.user WHERE User='';"
-    sudo mysql -u root -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test_%';"
-    sudo mysql -u root -e "FLUSH PRIVILEGES;"
-fi
-
-# Composer [[7]]
-echo -e "${GREEN}📦 Installing Composer...${NC}"
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-rm composer-setup.php
-
-# Laravel Valet
-echo -e "${GREEN}⚡ Installing Laravel Valet...${NC}"
-composer global require laravel/valet
-echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-valet install
-
-# phpMyAdmin
-echo -e "${GREEN}📊 Installing phpMyAdmin...${NC}"
-case "$OS" in
-    *Ubuntu*|*Debian*) sudo apt install -y phpmyadmin;;
-    *Fedora*) sudo dnf install -y php-phpmyadmin;;
-    *Arch*) sudo pacman -S --noconfirm phpmyadmin;;
-esac
-
-# Git config [[2]]
+# Git config
 read -p "Enter Git name: " GIT_NAME
 read -p "Enter Git email: " GIT_EMAIL
 git config --global user.name "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"
 
-# Generate SSH Key [[2]]
+# Generate SSH Key
 if [ ! -f ~/.ssh/id_rsa ]; then
     ssh-keygen -t rsa -b 4096 -N "" -C "$GIT_EMAIL"
     eval "$(ssh-agent -s)"
